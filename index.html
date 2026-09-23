@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Jelly’s Sock Sprint</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="mobile.css">
-  <script src="game.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=1.9.0">
+  <link rel="stylesheet" href="mobile.css?v=1.9.0">
+  <script src="game.js?v=1.9.0" defer></script>
 </head>
 <body>
   <main class="shell">
@@ -17,9 +17,9 @@
         <div class="profile"><img src="Jelly/D7F0AA97-CB4D-4150-AD15-686F16528EA9_1_105_c.jpeg" alt="Jelly, a white, black and tan Danish-Swedish Farmdog"><div><strong>Jelly</strong><span id="mood">Ready for mischief</span></div></div>
         <div class="stat"><span>SOCK SCORE</span><strong id="score">000</strong></div>
         <div class="stat"><span>HEARTS</span><strong id="hearts" aria-label="3 hearts">♥ ♥ ♥</strong></div>
-        <div class="stat best-stat"><span>BEST</span><strong id="best-score">000</strong></div>
+        <div class="stat best-stat"><span>BEST <em id="difficulty-label">NORMAL</em></span><strong id="best-score">000</strong></div>
         <div class="stat clock"><span>TIME LEFT</span><strong id="timer">1:00</strong></div>
-        <button id="restart" class="icon-button" aria-label="Restart game" title="Restart game">↻</button>
+        <span class="build-version" aria-label="Game version">v1.9.0</span><button id="restart" class="icon-button" aria-label="Restart game" title="Restart game">↻</button>
       </div>
       <div class="playfield" id="playfield">
         <svg id="world" viewBox="0 0 960 560" role="img" aria-label="Top-down apartment. Use WASD or arrow keys to collect socks and avoid tempting snacks.">
@@ -59,7 +59,7 @@
         <div class="overlay" id="title-screen"><div class="screen-card">
           <div class="portrait-wrap"><img class="portrait" src="Jelly/D7F0AA97-CB4D-4150-AD15-686F16528EA9_1_105_c.jpeg" alt="Jelly leaning playfully forward"><span class="portrait-badge">SOCK ENTHUSIAST</span></div>
           <p class="eyebrow">MEET YOUR TINY TROUBLEMAKER</p><h2>Fast paws.<br>Questionable snacks.</h2><p>Match pairs, dodge tempting snacks,<br class="desktop-break"> and chase a brand-new best score.</p>
-          <div class="mode-note"><strong>LAUNDRY DAY</strong><span>Match pairs for +25 bonuses</span></div>
+          <div class="mode-picker" aria-label="Choose difficulty"><button class="mode-option selected" data-mode="normal"><strong>NORMAL</strong><span>5 snacks · 8 sec pairs</span></button><button class="mode-option" data-mode="hard"><strong>HARD MODE</strong><span>8 snacks · 5 sec pairs</span></button></div>
           <button class="primary" id="start">Let’s sprint <span>→</span></button><small>60 seconds · 3 hearts · endless enthusiasm</small>
         </div></div>
         <div class="overlay" id="end-screen" hidden><div class="screen-card result-card"><img class="portrait result-portrait" src="Jelly/D7F0AA97-CB4D-4150-AD15-686F16528EA9_1_105_c.jpeg" alt="Jelly, ready for a well-earned cuddle"><p class="eyebrow" id="result-kicker">THE ZOOMIES ARE OVER</p><h2 id="result-title">One happy little dog.</h2><p id="result-copy"></p><div class="result-score"><strong id="final-score">0</strong><span>POINTS OF PURE MISCHIEF</span></div><p id="breakdown" class="breakdown"></p><button class="primary" id="again">One more sprint <span>↻</span></button></div></div>
@@ -72,7 +72,7 @@
       </div>
     </section>
     <div class="legend"><div><span class="legend-icon sock-icon"><svg width="25" height="29" viewBox="0 0 30 34" aria-hidden="true"><path d="M6 2H19V19L25 23Q29 28 24 31Q20 34 16 30L6 22Z" fill="currentColor"/><path d="M7 7H18M7 11H18" stroke="#f8f5e9" stroke-width="2"/></svg></span><p><strong>Socks are treasures</strong><span>Each rescued sock earns +10.</span></p></div><div><span class="legend-icon snack-icon">✦</span><p><strong>Snacks are tempting</strong><span>Get close and Jelly may veer toward them.</span></p></div><div><span class="legend-icon cuddle-icon">♡</span><p><strong>Chase a new best</strong><span>Beat the score saved on this device.</span></p></div></div>
-    <footer class="page-footer">Made for Jelly. And everyone who’s ever lost a sock.<span>A tiny game with a big heart ♡</span></footer>
+    <footer class="page-footer">Made for Jelly. And everyone who’s ever lost a sock.<span>A tiny game with a big heart ♡ · <strong>v1.9.0</strong></span></footer>
   </main>
 </body>
 </html>

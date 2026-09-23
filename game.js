@@ -8,7 +8,8 @@
     {x:40,y:40,w:105,h:95}, {x:783,y:39,w:132,h:76},
     {x:43,y:437,w:100,h:78}
   ];
-  const SCORE_KEY='jelly-sock-sprint-best';
+  const VERSION='1.9.0';
+  let difficulty='normal';
   let state = 'title', elapsed = 0, score = 0, hearts = 3, collected = 0;
   let immune = 0, stun = 0;
   let pairStreak = null, pairStreakAt = -99, bestScore = readBestScore();
@@ -16,8 +17,9 @@
   let lastTime = 0, toastTime = 0, items = [], effects = [];
   let dog = {x:480,y:285,angle:0};
 
-  function readBestScore() { try { return Number(localStorage.getItem(SCORE_KEY))||0; } catch { return 0; } }
-  function saveBestScore() { try { localStorage.setItem(SCORE_KEY,String(bestScore)); } catch {} }
+  function scoreKey() { return `jelly-sock-sprint-best-${difficulty}`; }
+  function readBestScore() { try { return Number(localStorage.getItem(scoreKey()))||0; } catch { return 0; } }
+  function saveBestScore() { try { localStorage.setItem(scoreKey(),String(bestScore)); } catch {} }
 
   function svg(tag, attrs, parent) {
     const node = document.createElementNS(NS, tag);
@@ -62,18 +64,19 @@
     }
     const angle=Math.random()*Math.PI*2;
     node.classList.add(type==='snack'?'snack-item':'sock-item');
-    items.push({type,x,y,node,pair,rotation:Math.random()*70-35,life:type==='snack'?12+Math.random()*8:Infinity});
+    items.push({type,x,y,node,pair,rotation:Math.random()*70-35,life:type==='snack'?(difficulty==='hard'?6+Math.random()*4:12+Math.random()*8):Infinity});
   }
   function hud() {
     $('score').textContent=String(score).padStart(3,'0');
     $('best-score').textContent=String(bestScore).padStart(3,'0');
+    $('difficulty-label').textContent=difficulty==='hard'?'HARD':'NORMAL';
     $('hearts').textContent='♥ '.repeat(hearts)+'♡ '.repeat(3-hearts);
     $('hearts').setAttribute('aria-label',`${hearts} hearts`);
     const remaining=Math.max(0,Math.ceil(60-elapsed));
     $('timer').textContent=`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
     $('timer').style.color=remaining<=15?'#c36443':'';
     const nearest=nearestSnack();
-    $('mood').textContent=stun>0?'A little snack daze':nearest&&nearest.distance<185?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
+    $('mood').textContent=stun>0?'A little snack daze':nearest&&nearest.distance<(difficulty==='hard'?225:185)?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
   }
   function toast(message) {
     $('toast').textContent=message; $('toast').classList.add('show'); toastTime=3;
@@ -96,8 +99,8 @@
     ['title-screen','end-screen','pause-screen'].forEach(id=>$(id).hidden=true);
     $('round-status').textContent='Match pairs for +25';
     for(let pair=0;pair<4;pair++){addItem('sock',pair);addItem('sock',pair);}
-    for(let i=0;i<5;i++) addItem('snack');
-    toast('Laundry Day! Match pairs for +25.');hud();renderDog();
+    for(let i=0;i<(difficulty==='hard'?8:5);i++) addItem('snack');
+    toast(difficulty==='hard'?'Hard mode! Snackier floor, tighter pairs.':'Laundry Day! Match pairs for +25.');hud();renderDog();
     lastTime=performance.now();
     // Keep Space/Enter from accidentally activating a focused restart button.
     if(document.activeElement instanceof HTMLElement) document.activeElement.blur();
@@ -109,8 +112,8 @@
     $('result-kicker').textContent='THE ZOOMIES ARE OVER';
     $('result-title').textContent=hearts===0?'Too many mystery snacks!':'One happy little dog.';
     const newBest=score>bestScore;if(newBest){bestScore=score;saveBestScore();}
-    $('result-copy').textContent=newBest?'New best score!':hearts===0?'Time for a little rest. The socks can wait.':'A very speedy farmdog. A very well-earned rest.';
-    $('breakdown').textContent=`${collected} socks × 10 points · matching pairs add +25 · ${hearts} hearts left · best ${bestScore}`;
+    $('result-copy').textContent=newBest?`New ${difficulty==='hard'?'hard-mode ':''}best score!`:hearts===0?'Time for a little rest. The socks can wait.':'A very speedy farmdog. A very well-earned rest.';
+    $('breakdown').textContent=`${difficulty==='hard'?'HARD':'NORMAL'} · ${collected} socks × 10 points · matching pairs add +25 · ${hearts} hearts left · best ${bestScore}`;
     $('again').focus({preventScroll:true});
   }
   function pause() {
@@ -128,12 +131,13 @@
   }
   function applySnackPull(dx,dy) {
     const found=nearestSnack();
-    if(!found||found.distance>185) return {dx,dy,auto:false};
-    const strength=(1-found.distance/185)*.62;
+    const attractionRange=difficulty==='hard'?225:185;
+    if(!found||found.distance>attractionRange) return {dx,dy,auto:false};
+    const strength=(1-found.distance/attractionRange)*(difficulty==='hard'?.72:.62);
     const nearest=found.item, distance=found.distance;
     const towardX=(nearest.x-dog.x)/(distance||1), towardY=(nearest.y-dog.y)/(distance||1);
     const hasInput=dx!==0||dy!==0;
-    if(!hasInput && distance<155) return {dx:towardX,dy:towardY,auto:true};
+    if(!hasInput && distance<(difficulty==='hard'?175:155)) return {dx:towardX,dy:towardY,auto:true};
     return {dx:dx*(1-strength)+towardX*strength,dy:dy*(1-strength)+towardY*strength,auto:false};
   }
   function update(dt) {
@@ -163,7 +167,8 @@
       items.splice(items.indexOf(item),1);item.node.remove();
       if(item.type==='sock') {
         score+=10;collected++;pop(item.x,item.y-22,'+10','#355c48');
-        if(pairStreak===item.pair && elapsed-pairStreakAt<=8){score+=25;pop(item.x,item.y-45,'PAIR +25','#d26b43');toast('A perfect pair! +25 laundry bonus.');pairStreak=null;}
+        const pairWindow=difficulty==='hard'?5:8;
+        if(pairStreak===item.pair && elapsed-pairStreakAt<=pairWindow){score+=25;pop(item.x,item.y-45,'PAIR +25','#d26b43');toast('A perfect pair! +25 laundry bonus.');pairStreak=null;}
         else {pairStreak=item.pair;pairStreakAt=elapsed;toast('Pair started! Find its match.');}
       }
       else {hearts--;stun=.65;immune=1.4;pop(item.x,item.y-22,'−1 ♥','#bd5037');toast('Snack smack! Jelly needs a breather.');}
@@ -205,6 +210,12 @@
   joystick.addEventListener('pointerdown',event=>{if(state!=='playing')return;event.preventDefault();joystick.setPointerCapture?.(event.pointerId);updateJoystick(event);});
   joystick.addEventListener('pointermove',event=>{if(touchVector.active) {event.preventDefault();updateJoystick(event);}});
   joystick.addEventListener('pointerup',releaseJoystick);joystick.addEventListener('pointercancel',releaseJoystick);joystick.addEventListener('lostpointercapture',releaseJoystick);
+  document.querySelectorAll('.mode-option').forEach(option=>option.addEventListener('click',()=>{
+    difficulty=option.dataset.mode;
+    bestScore=readBestScore();
+    document.querySelectorAll('.mode-option').forEach(button=>button.classList.toggle('selected',button===option));
+    hud();
+  }));
   window.addEventListener('blur',pause);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   $('start').addEventListener('click',start);$('restart').addEventListener('click',start);$('again').addEventListener('click',start);$('resume').addEventListener('click',resume);

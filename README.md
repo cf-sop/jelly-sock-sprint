@@ -16,8 +16,9 @@ joystick; keyboard controls remain available on desktop.
 
 ## How to play
 
-- Click **Let’s sprint**, then use **WASD**, the **arrow keys**, or the circular
-  on-screen joystick on touch devices to move.
+- Click **Let’s sprint**, choose **Normal** or **Hard Mode**, then use **WASD**,
+  the **arrow keys**, or the circular on-screen joystick on touch devices to
+  move.
 - Collect coloured socks for **10 points each**.
 - Avoid golden mystery snacks marked **?**. They smell tempting, stay put for
   about 12–20 seconds, then fade and respawn elsewhere. When Jelly gets close
@@ -29,6 +30,14 @@ joystick; keyboard controls remain available on desktop.
 - Press **Escape** to pause or resume. Switching windows or tabs pauses the game.
 - Click **↻** in the HUD or **One more sprint** at the end to start a fresh round.
 - Your highest score is saved locally in the browser and shown as **BEST**.
+
+Hard Mode uses eight snacks instead of five, refreshes them faster, increases
+their attraction range, and gives five seconds instead of eight to complete a
+matching pair. Normal and Hard Mode keep separate local best scores.
+
+The current build number is visible in the HUD as `v1.9.0`. If an iPhone appears
+to show an older layout, refresh the GitHub Pages URL in Safari; the asset URLs
+also include the build version to avoid stale cached files.
 
 ### Laundry Day
 

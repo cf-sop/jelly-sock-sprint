@@ -1,5 +1,6 @@
 /* Phone controls and layout overrides. The main stylesheet keeps desktop intact. */
 .touch-controls { display: none; }
+.build-version { margin-left: 2px; color: var(--muted); font-size: 9px; letter-spacing: .5px; white-space: nowrap; }
 .mode-picker { display: flex; justify-content: center; gap: 8px; margin: 0 auto 16px; }
 .mode-option { appearance: none; border: 1px solid #d9ddce; border-radius: 9px; background: #f4f3eb; color: var(--green); padding: 8px 12px; cursor: pointer; text-align: left; }
 .mode-option strong { display: block; font: 700 9px "Trebuchet MS", sans-serif; letter-spacing: .8px; }
