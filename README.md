@@ -16,12 +16,13 @@ keyboard controls remain available on desktop.
 
 ## How to play
 
-- Click **Let’s sprint**, then use **WASD**, the **arrow keys**, or the on-screen
-  paw pad on touch devices to move.
+- Click **Let’s sprint**, choose **Sock Rescue** or **Laundry Day**, then use
+  **WASD**, the **arrow keys**, or the circular on-screen joystick on touch
+  devices to move.
 - Collect coloured socks for **10 points each**.
-- Avoid brown, jagged mystery snacks marked **?**. Each costs **one heart** and
-  gives a **two-second speed boost**, followed by normal speed. After a hit,
-  Jelly has 1.4 seconds of protection against further damage.
+- Avoid brown, jagged mystery snacks marked **?**. They drift and bounce through
+  the room. Each costs **one heart** and briefly dazes Jelly; after a hit she has
+  1.4 seconds of protection against further damage.
 - You start with **three hearts**. Losing all three ends the round early.
 - At **45 seconds elapsed** (15 seconds remaining), a green sofa appears in the
   bottom-right corner. Touch it for a **one-time 100-point cuddle bonus**.
@@ -30,6 +31,13 @@ keyboard controls remain available on desktop.
   the cuddle if you reached the sofa and shows a score breakdown.
 - Press **Escape** to pause or resume. Switching windows or tabs pauses the game.
 - Click **↻** in the HUD or **One more sprint** at the end to start a fresh round.
+
+### Modes
+
+- **Sock Rescue:** socks have an escape timer. When one starts running for the
+  laundry basket, catch it before it disappears.
+- **Laundry Day:** socks arrive in matching pairs. Collect both within eight
+  seconds for a **+25 pair bonus**.
 
 The game supports touch devices as well as keyboards. A landscape phone view gives
 the apartment the most room, though portrait view also works. There is no online
@@ -55,5 +63,6 @@ there are no libraries, external assets, APIs, or network requests.
 - `mobile.css`: iPhone layout and touch paw pad
 - `game.js`: movement, collisions, timer, scoring, and game states
 
-To adjust difficulty, the movement speeds, snack boost, and collision distances
-are defined in `game.js` inside `update()`.
+To adjust difficulty, the movement speeds, snack movement, rescue timer, and
+collision distances are defined in `game.js` inside `update()` and
+`updateMovingItems()`.
