@@ -39,8 +39,9 @@ Jelly, furniture, and the sofa corner.
 ## Local artwork
 
 The title screen, HUD, and results use the original local photo directly:
-`Jelly/47CDE5D9-E549-47FF-AE69-A2C0DC6621D3_1_105_c.jpeg`.
-The image is never uploaded, edited, or used as an animated sprite.
+`Jelly/D7F0AA97-CB4D-4150-AD15-686F16528EA9_1_105_c.jpeg`.
+The image is used directly as a local repository asset and is not edited or used
+as an animated sprite.
 
 Jelly’s separate SVG character takes its mostly white body, dark cap, folded
 ears, tan facial markings, white blaze and muzzle, and black nose from that
