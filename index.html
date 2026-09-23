@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jelly’s Sock Sprint</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mobile.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead"><a class="wordmark" href="index.html">JELLY & CO.<span>THE APARTMENT ADVENTURES</span></a><span class="edition">NO. 01 / SOCK SPRINT</span></header>
+    <div class="heading"><div><p class="eyebrow">SMALL DOG. BIG SOCK ENERGY.</p><h1>Jelly’s Sock Sprint<span>!</span></h1></div><p class="intro">A little chaos.<br>A lot of cuddles.</p></div>
+    <section class="game" aria-label="Jelly’s Sock Sprint game">
+      <div class="hud">
+        <div class="profile"><img src="Jelly/47CDE5D9-E549-47FF-AE69-A2C0DC6621D3_1_105_c.jpeg" alt="Jelly, a white, black and tan Danish-Swedish Farmdog"><div><strong>Jelly</strong><span id="mood">Ready for mischief</span></div></div>
+        <div class="stat"><span>SOCK SCORE</span><strong id="score">000</strong></div>
+        <div class="stat"><span>HEARTS</span><strong id="hearts" aria-label="3 hearts">♥ ♥ ♥</strong></div>
+        <div class="stat clock"><span>TIME LEFT</span><strong id="timer">1:00</strong></div>
+        <button id="restart" class="icon-button" aria-label="Restart game" title="Restart game">↻</button>
+      </div>
+      <div class="playfield" id="playfield">
+        <svg id="world" viewBox="0 0 960 560" role="img" aria-label="Top-down apartment. Use WASD or arrow keys to collect socks and avoid snacks.">
+          <defs>
+            <pattern id="boards" width="120" height="70" patternUnits="userSpaceOnUse"><rect width="120" height="70" fill="#e9ceb0"/><path d="M0 0H120V70H0V0M60 0V35M0 35H120" fill="none" stroke="#d9b894" stroke-width="1.5"/><path d="M8 16H45M73 50H108" stroke="#e0bf9c" stroke-width="2" stroke-linecap="round"/></pattern>
+            <pattern id="rug-lines" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 0L12 12M-6 6L6 18M6-6L18 6" stroke="#edcfad" opacity=".3"/></pattern>
+            <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#644e38" flood-opacity=".18"/></filter>
+          </defs>
+          <rect width="960" height="560" fill="url(#boards)"/>
+          <path d="M0 0H960V560H0Z" fill="none" stroke="#aa8060" stroke-width="22"/>
+          <path d="M12 13H948" stroke="#f8e8d4" stroke-width="9"/>
+          <rect x="227" y="150" width="506" height="291" rx="85" fill="#c77856" opacity=".22"/>
+          <rect x="222" y="142" width="506" height="291" rx="85" fill="#cc8968"/>
+          <rect x="233" y="153" width="484" height="269" rx="75" fill="none" stroke="#e4b78d" stroke-width="3"/>
+          <rect x="242" y="162" width="466" height="251" rx="70" fill="url(#rug-lines)"/>
+          <text x="480" y="302" text-anchor="middle" fill="#f5d7b1" opacity=".4" font-size="21" letter-spacing="7">HOME, SWEET CHAOS</text>
+          <g filter="url(#shadow)"><rect x="365" y="14" width="230" height="37" rx="7" fill="#f8edd9"/><rect x="380" y="14" width="200" height="23" rx="3" fill="#a4c6c5"/><path d="M446 14V37M513 14V37" stroke="#f8edd9" stroke-width="6"/></g>
+          <g id="decor"></g>
+          <g id="sofa" visibility="hidden" filter="url(#shadow)"><rect x="719" y="379" width="185" height="123" rx="24" fill="#345a49"/><rect x="735" y="390" width="153" height="40" rx="13" fill="#7fa184"/><rect x="741" y="434" width="67" height="47" rx="10" fill="#99b597"/><rect x="814" y="434" width="67" height="47" rx="10" fill="#99b597"/><rect x="719" y="423" width="22" height="67" rx="10" fill="#66896f"/><rect x="883" y="423" width="22" height="67" rx="10" fill="#66896f"/><path d="M797 410q-12-15-20 0q-2 8 20 18q22-10 20-18q-8-15-20 0" fill="#f3d6bd"/><text id="sofa-label" x="813" y="528" text-anchor="middle" fill="#355641" font-size="14" font-weight="bold" letter-spacing="2">CUDDLES THIS WAY ↓</text></g>
+          <g id="items"></g>
+          <g id="dog" transform="translate(480 290)">
+            <ellipse cy="12" rx="22" ry="14" fill="#61462d" opacity=".18"/>
+            <g id="dog-body">
+              <path class="tail" d="M-19 0Q-39-19-36-4" fill="none" stroke="#fff9ed" stroke-width="8" stroke-linecap="round"/>
+              <g fill="#fff9ed" stroke="#d6c5b2" stroke-width="1.5"><ellipse class="paw p1" cx="-10" cy="-12" rx="8" ry="5"/><ellipse class="paw p2" cx="-10" cy="12" rx="8" ry="5"/><ellipse class="paw p2" cx="12" cy="-12" rx="8" ry="5"/><ellipse class="paw p1" cx="12" cy="12" rx="8" ry="5"/><ellipse rx="25" ry="15"/></g>
+              <ellipse cx="17" rx="17" ry="17" fill="#3d302b"/>
+              <path d="M9-11Q-4-26 2-4L12-2M9 11Q-4 26 2 4L12 2" fill="#89552e" stroke="#3d302b" stroke-width="3"/>
+              <ellipse cx="23" cy="-9" rx="8" ry="6" fill="#b47a3d"/><ellipse cx="23" cy="9" rx="8" ry="6" fill="#b47a3d"/>
+              <path d="M8-2L23-4L33-7L37 0L33 7L23 4Z" fill="#fff9ed"/>
+              <ellipse cx="30" rx="10" ry="8" fill="#fff9ed"/>
+              <ellipse cx="37" rx="4" ry="5" fill="#2b2b29"/>
+              <g fill="#272a26"><circle cx="23" cy="-9" r="3.6"/><circle cx="23" cy="9" r="3.6"/></g><g fill="white"><circle cx="24" cy="-10" r="1.2"/><circle cx="24" cy="8" r="1.2"/></g>
+            </g>
+          </g>
+          <g id="effects" pointer-events="none"></g>
+        </svg>
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+        <div class="overlay" id="title-screen"><div class="screen-card">
+          <div class="portrait-wrap"><img class="portrait" src="Jelly/47CDE5D9-E549-47FF-AE69-A2C0DC6621D3_1_105_c.jpeg" alt="Jelly leaning playfully forward"><span class="portrait-badge">SOCK ENTHUSIAST</span></div>
+          <p class="eyebrow">MEET YOUR TINY TROUBLEMAKER</p><h2>Fast paws.<br>Questionable snacks.</h2><p>Help Jelly scoop up socks, dodge floor snacks,<br class="desktop-break"> and make time for a sofa cuddle.</p>
+          <button class="primary" id="start">Let’s sprint <span>→</span></button><small>60 seconds · 3 hearts · endless enthusiasm</small>
+        </div></div>
+        <div class="overlay" id="end-screen" hidden><div class="screen-card result-card"><img class="portrait result-portrait" src="Jelly/47CDE5D9-E549-47FF-AE69-A2C0DC6621D3_1_105_c.jpeg" alt="Jelly, ready for a well-earned cuddle"><p class="eyebrow" id="result-kicker">THE ZOOMIES ARE OVER</p><h2 id="result-title">One happy little dog.</h2><p id="result-copy"></p><div class="result-score"><strong id="final-score">0</strong><span>POINTS OF PURE MISCHIEF</span></div><p id="breakdown" class="breakdown"></p><button class="primary" id="again">One more sprint <span>↻</span></button></div></div>
+        <div class="overlay pause-overlay" id="pause-screen" hidden><div class="screen-card"><p class="eyebrow">A LITTLE BREATHER</p><h2>Paws on pause.</h2><button class="primary" id="resume">Keep sprinting →</button></div></div>
+      </div>
+      <div class="game-footer"><span><i class="live-dot"></i><span id="sofa-status">Sofa arrives at 0:15 remaining</span></span><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> to move <span class="pause-hint">· <kbd>Esc</kbd> pause</span></span></div>
+      <div class="touch-controls" aria-label="Touch movement controls">
+        <span class="touch-hint">Use the paw pad to sprint</span>
+        <div class="d-pad">
+          <button data-key="arrowup" aria-label="Move up">↑</button>
+          <button data-key="arrowleft" aria-label="Move left">←</button>
+          <button data-key="arrowdown" aria-label="Move down">↓</button>
+          <button data-key="arrowright" aria-label="Move right">→</button>
+        </div>
+      </div>
+    </section>
+    <div class="legend"><div><span class="legend-icon sock-icon"><svg width="25" height="29" viewBox="0 0 30 34" aria-hidden="true"><path d="M6 2H19V19L25 23Q29 28 24 31Q20 34 16 30L6 22Z" fill="currentColor"/><path d="M7 7H18M7 11H18" stroke="#f8f5e9" stroke-width="2"/></svg></span><p><strong>Socks are treasures</strong><span>Each rescued sock earns +10.</span></p></div><div><span class="legend-icon snack-icon">✦</span><p><strong>That’s not a treat</strong><span>−1 heart. A brief burst of zoomies.</span></p></div><div><span class="legend-icon cuddle-icon">♡</span><p><strong>Save room for cuddles</strong><span>Find the sofa for a +100 bonus.</span></p></div></div>
+    <footer class="page-footer">Made for Jelly. And everyone who’s ever lost a sock.<span>A tiny game with a big heart ♡</span></footer>
+  </main>
+</body>
+</html>

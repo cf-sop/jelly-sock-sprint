@@ -1,0 +1,41 @@
+/* Phone controls and layout overrides. The main stylesheet keeps desktop intact. */
+.touch-controls { display: none; }
+
+@media (max-width: 720px) {
+  .playfield { min-height: 0; aspect-ratio: 1.5 / 1; }
+
+  .touch-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px 13px;
+    background: #fffdf8;
+    border-top: 1px solid #edecdf;
+  }
+
+  .touch-hint { font-size: 10px; color: var(--muted); }
+
+  .d-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 38px);
+    grid-template-rows: repeat(2, 34px);
+    gap: 3px;
+  }
+
+  .d-pad button {
+    appearance: none;
+    border: 1px solid #d9ddce;
+    border-bottom-width: 3px;
+    border-radius: 8px;
+    background: #edf0e4;
+    color: var(--green);
+    font: 700 19px Arial, sans-serif;
+    touch-action: none;
+  }
+
+  .d-pad button:nth-child(1) { grid-column: 2; }
+  .d-pad button:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .d-pad button:nth-child(3) { grid-column: 2; grid-row: 2; }
+  .d-pad button:nth-child(4) { grid-column: 3; grid-row: 2; }
+  .d-pad button:active, .d-pad button.pressed { background: #b8cdb7; transform: translateY(1px); }
+}
