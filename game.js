@@ -10,7 +10,7 @@
   ];
   let state = 'title', elapsed = 0, score = 0, hearts = 3, collected = 0;
   let cuddled = false, sofaReady = false, boost = 0, immune = 0, stun = 0;
-  let gameMode = 'rescue', pairStreak = null, pairStreakAt = -99;
+  let gameMode = 'laundry', pairStreak = null, pairStreakAt = -99;
   const touchVector = {x:0,y:0,active:false};
   let lastTime = 0, toastTime = 0, items = [], effects = [];
   let dog = {x:480,y:285,angle:0};
@@ -50,7 +50,8 @@
     if(!found) return;
     const node=svg('g',{transform:`translate(${x} ${y}) rotate(${Math.random()*70-35})`,filter:'url(#shadow)'},$('items'));
     if(type==='sock') {
-      const color=['#537e79','#d06449','#e8b54c','#8e82a5'][Math.floor(Math.random()*4)];
+      const colors=['#537e79','#d06449','#e8b54c','#8e82a5'];
+      const color=pair===null?colors[Math.floor(Math.random()*colors.length)]:colors[pair%colors.length];
       node.innerHTML=`<path d="M-9-17H8V1L17 5Q24 10 17 17Q12 21 5 17L-9 8Z" fill="${color}" stroke="#fff8e7" stroke-width="2.5"/><path d="M-8-10H7M-8-5H7" stroke="#fff2dc" stroke-width="3"/><path d="M11 4L5 15" stroke="#fff2dc" stroke-width="5"/>`;
     } else {
       node.innerHTML='<path d="M-16-9L-7-12L-3-18L5-13L14-13L13-4L19 3L11 8L8 16L0 12L-10 15L-11 6L-18 1Z" fill="#ae6d3f" stroke="#f7d59d" stroke-width="2"/><circle r="10" fill="#e6ae65"/><text y="5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="16" fill="#67452e">?</text>';

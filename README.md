@@ -16,7 +16,8 @@ keyboard controls remain available on desktop.
 
 ## How to play
 
-- Click **Let’s sprint**, choose **Sock Rescue** or **Laundry Day**, then use
+- Click **Let’s sprint**, then use **Laundry Day** (the default) or choose
+  **Sock Rescue**, then use
   **WASD**, the **arrow keys**, or the circular on-screen joystick on touch
   devices to move.
 - Collect coloured socks for **10 points each**.
