@@ -19,9 +19,10 @@ joystick; keyboard controls remain available on desktop.
 - Click **Let’s sprint**, then use **WASD**, the **arrow keys**, or the circular
   on-screen joystick on touch devices to move.
 - Collect coloured socks for **10 points each**.
-- Avoid brown, jagged mystery snacks marked **?**. They stay put, but when Jelly
-  gets close she is gently drawn toward them. Each costs **one heart** and
-  briefly dazes her; after a hit she has 1.4 seconds of protection.
+- Avoid golden mystery snacks marked **?**. They smell tempting, stay put for
+  about 12–20 seconds, then fade and respawn elsewhere. When Jelly gets close
+  she is gently drawn toward them. Each costs **one heart** and briefly dazes
+  her; after a hit she has 1.4 seconds of protection.
 - You start with **three hearts**. Losing all three ends the round early.
 - At **45 seconds elapsed** (15 seconds remaining), a green sofa appears in the
   bottom-right corner. Touch it for a **one-time 100-point cuddle bonus**.

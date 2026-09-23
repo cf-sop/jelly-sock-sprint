@@ -58,11 +58,11 @@
       const color=pair===null?colors[Math.floor(Math.random()*colors.length)]:colors[pair%colors.length];
       node.innerHTML=`<path d="M-9-17H8V1L17 5Q24 10 17 17Q12 21 5 17L-9 8Z" fill="${color}" stroke="#fff8e7" stroke-width="2.5"/><path d="M-8-10H7M-8-5H7" stroke="#fff2dc" stroke-width="3"/><path d="M11 4L5 15" stroke="#fff2dc" stroke-width="5"/>`;
     } else {
-      node.innerHTML='<path d="M-16-9L-7-12L-3-18L5-13L14-13L13-4L19 3L11 8L8 16L0 12L-10 15L-11 6L-18 1Z" fill="#ae6d3f" stroke="#f7d59d" stroke-width="2"/><circle r="10" fill="#e6ae65"/><text y="5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="16" fill="#67452e">?</text>';
+      node.innerHTML='<path class="snack-aroma" d="M-21-21q-7-8 0-15M-12-23q-5-7 1-13" fill="none" stroke="#f1c878" stroke-width="2" stroke-linecap="round" opacity=".75"/><path d="M-17-7Q-15-17 0-18Q15-17 18-7L14 9Q0 17-14 9Z" fill="#d89545" stroke="#70472d" stroke-width="2"/><path d="M-10-6Q0-12 10-6M-8 3Q0 8 8 3" fill="none" stroke="#f6d48e" stroke-width="2.5" stroke-linecap="round"/><circle cx="-5" cy="-4" r="2" fill="#fff0bd"/><circle cx="7" cy="5" r="1.7" fill="#fff0bd"/><text y="5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="9" fill="#70472d">?</text>';
     }
     const angle=Math.random()*Math.PI*2;
     node.classList.add(type==='snack'?'snack-item':'sock-item');
-    items.push({type,x,y,node,pair,rotation:Math.random()*70-35});
+    items.push({type,x,y,node,pair,rotation:Math.random()*70-35,life:type==='snack'?12+Math.random()*8:Infinity});
   }
   function hud() {
     $('score').textContent=String(score).padStart(3,'0');
@@ -73,7 +73,7 @@
     $('timer').textContent=`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
     $('timer').style.color=remaining<=15?'#c36443':'';
     const nearest=nearestSnack();
-    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':nearest&&nearest.distance<155?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
+    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':nearest&&nearest.distance<185?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
   }
   function toast(message) {
     $('toast').textContent=message; $('toast').classList.add('show'); toastTime=3;
@@ -130,12 +130,12 @@
   }
   function applySnackPull(dx,dy) {
     const found=nearestSnack();
-    if(!found||found.distance>155) return {dx,dy,auto:false};
-    const strength=(1-found.distance/155)*.48;
+    if(!found||found.distance>185) return {dx,dy,auto:false};
+    const strength=(1-found.distance/185)*.62;
     const nearest=found.item, distance=found.distance;
     const towardX=(nearest.x-dog.x)/(distance||1), towardY=(nearest.y-dog.y)/(distance||1);
     const hasInput=dx!==0||dy!==0;
-    if(!hasInput && distance<135) return {dx:towardX,dy:towardY,auto:true};
+    if(!hasInput && distance<155) return {dx:towardX,dy:towardY,auto:true};
     return {dx:dx*(1-strength)+towardX*strength,dy:dy*(1-strength)+towardY*strength,auto:false};
   }
   function update(dt) {
@@ -151,7 +151,7 @@
     const moving=inputMoving||pulled.auto;
     if(moving && stun<=0) {
       const length=Math.hypot(dx,dy);dx/=length;dy/=length;
-      const step=pulled.auto?Math.max(48,125*(1-(nearestSnack()?.distance||135)/135)):235;
+      const step=pulled.auto?Math.max(48,135*(1-(nearestSnack()?.distance||155)/155)):235;
       const x=Math.max(32,Math.min(928,dog.x+dx*step));
       const y=Math.max(32,Math.min(528,dog.y+dy*step));
       if(free(x,dog.y,18))dog.x=x;
@@ -159,6 +159,10 @@
       dog.angle=Math.atan2(dy,dx)*180/Math.PI;
     }
     for(const item of [...items]) {
+      if(item.type==='snack') {
+        item.life-=dt;
+        if(item.life<=0) { item.node.remove(); items.splice(items.indexOf(item),1); addItem('snack'); continue; }
+      }
       if(Math.hypot(dog.x-item.x,dog.y-item.y)>31)continue;
       if(item.type==='snack' && immune>0)continue;
       items.splice(items.indexOf(item),1);item.node.remove();
