@@ -145,7 +145,8 @@
     const moving=inputMoving||pulled.auto;
     if(moving && stun<=0) {
       const length=Math.hypot(dx,dy);dx/=length;dy/=length;
-      const step=pulled.auto?Math.max(48,135*(1-(nearestSnack()?.distance||155)/155)):235;
+      const speed=pulled.auto?Math.max(48,135*(1-(nearestSnack()?.distance||155)/155)):(touchVector.active?185:235);
+      const step=Math.min(speed*dt,8);
       const x=Math.max(32,Math.min(928,dog.x+dx*step));
       const y=Math.max(32,Math.min(528,dog.y+dy*step));
       if(free(x,dog.y,18))dog.x=x;
