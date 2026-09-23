@@ -24,11 +24,8 @@ joystick; keyboard controls remain available on desktop.
   she is gently drawn toward them. Each costs **one heart** and briefly dazes
   her; after a hit she has 1.4 seconds of protection.
 - You start with **three hearts**. Losing all three ends the round early.
-- At **45 seconds elapsed** (15 seconds remaining), a green sofa appears in the
-  bottom-right corner. Touch it for a **one-time 100-point cuddle bonus**.
-  You can keep collecting socks afterward.
-- A full round lasts **60 seconds of active play**. The final scene celebrates
-  the cuddle if you reached the sofa and shows a score breakdown.
+- A full round lasts **60 seconds of active play** and ends with a score
+  breakdown and Jelly’s photo.
 - Press **Escape** to pause or resume. Switching windows or tabs pauses the game.
 - Click **↻** in the HUD or **One more sprint** at the end to start a fresh round.
 - Your highest score is saved locally in the browser and shown as **BEST**.
@@ -42,7 +39,7 @@ be recognized at a glance.
 The game supports touch devices as well as keyboards. A landscape phone view gives
 the apartment the most room, though portrait view also works. There is no online
 competition or leaderboard. Collectibles respawn in clear floor space, away from
-Jelly, furniture, and the sofa corner.
+Jelly and furniture.
 
 ## Local artwork
 

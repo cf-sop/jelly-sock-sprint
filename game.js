@@ -10,7 +10,7 @@
   ];
   const SCORE_KEY='jelly-sock-sprint-best';
   let state = 'title', elapsed = 0, score = 0, hearts = 3, collected = 0;
-  let cuddled = false, sofaReady = false, immune = 0, stun = 0;
+  let immune = 0, stun = 0;
   let pairStreak = null, pairStreakAt = -99, bestScore = readBestScore();
   const touchVector = {x:0,y:0,active:false};
   let lastTime = 0, toastTime = 0, items = [], effects = [];
@@ -45,10 +45,10 @@
   }
   function addItem(type, pair = null) {
     let x,y,found=false;
-    // Reserve the sofa corner even before it appears, and never spawn on Jelly.
+    // Keep fresh items in clear floor space and away from Jelly.
     for(let attempt=0;attempt<250;attempt++) {
       x=40+Math.random()*880; y=50+Math.random()*455;
-      if(free(x,y,29) && !hitsRect(x,y,35,{x:705,y:365,w:210,h:150}) &&
+      if(free(x,y,29) &&
         Math.hypot(x-dog.x,y-dog.y)>110 && items.every(i=>Math.hypot(x-i.x,y-i.y)>67)) {found=true;break;}
     }
     if(!found) return;
@@ -73,7 +73,7 @@
     $('timer').textContent=`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
     $('timer').style.color=remaining<=15?'#c36443':'';
     const nearest=nearestSnack();
-    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':nearest&&nearest.distance<185?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
+    $('mood').textContent=stun>0?'A little snack daze':nearest&&nearest.distance<185?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
   }
   function toast(message) {
     $('toast').textContent=message; $('toast').classList.add('show'); toastTime=3;
@@ -90,13 +90,11 @@
     $('dog').classList.toggle('invulnerable',immune>0 && Math.floor(immune*9)%2===0);
   }
   function start() {
-    state='playing';elapsed=score=collected=immune=stun=0;hearts=3;cuddled=sofaReady=false;pairStreak=null;pairStreakAt=-99;
+    state='playing';elapsed=score=collected=immune=stun=0;hearts=3;pairStreak=null;pairStreakAt=-99;
     dog={x:480,y:285,angle:0};keys.clear();touchVector.x=0;touchVector.y=0;touchVector.active=false;if(knob)knob.style.transform='translate(0,0)';items=[];effects=[];
     $('items').replaceChildren();$('effects').replaceChildren();
     ['title-screen','end-screen','pause-screen'].forEach(id=>$(id).hidden=true);
-    $('sofa').setAttribute('visibility','hidden');
-    $('sofa-label').textContent='CUDDLES THIS WAY ↑';
-    $('sofa-status').textContent='Sofa arrives at 0:15 remaining';
+    $('round-status').textContent='Match pairs for +25';
     for(let pair=0;pair<4;pair++){addItem('sock',pair);addItem('sock',pair);}
     for(let i=0;i<5;i++) addItem('snack');
     toast('Laundry Day! Match pairs for +25.');hud();renderDog();
@@ -108,11 +106,11 @@
     state='ended';keys.clear();renderDog();hud();
     $('toast').classList.remove('show');$('end-screen').hidden=false;
     $('final-score').textContent=score;
-    $('result-kicker').textContent=cuddled?'SOCKS. ZOOMIES. SOFA.':'THE ZOOMIES ARE OVER';
-    $('result-title').textContent=cuddled?'Cuddle mission complete.':hearts===0?'Too many mystery snacks!':'Still dreaming of socks.';
+    $('result-kicker').textContent='THE ZOOMIES ARE OVER';
+    $('result-title').textContent=hearts===0?'Too many mystery snacks!':'One happy little dog.';
     const newBest=score>bestScore;if(newBest){bestScore=score;saveBestScore();}
-    $('result-copy').textContent=newBest?'New best score!':cuddled?'A very speedy farmdog. A very well-earned snuggle.':hearts===0?'Time for a little rest. The socks can wait.':'Next time, follow the sofa call for a big cuddle bonus.';
-    $('breakdown').textContent=`${collected} socks × 10 points · matching pairs add +25${cuddled?' + 100 cuddle points':''} · ${hearts} hearts left · best ${bestScore}`;
+    $('result-copy').textContent=newBest?'New best score!':hearts===0?'Time for a little rest. The socks can wait.':'A very speedy farmdog. A very well-earned rest.';
+    $('breakdown').textContent=`${collected} socks × 10 points · matching pairs add +25 · ${hearts} hearts left · best ${bestScore}`;
     $('again').focus({preventScroll:true});
   }
   function pause() {
@@ -140,10 +138,6 @@
   }
   function update(dt) {
     elapsed=Math.min(60,elapsed+dt);immune=Math.max(0,immune-dt);stun=Math.max(0,stun-dt);
-    if(elapsed>=45 && !sofaReady) {
-      sofaReady=true;$('sofa').setAttribute('visibility','visible');
-      $('sofa-status').textContent='Sofa time! Head to the bottom-right corner.';toast('Sofa time! Find your +100 cuddle.');
-    }
     let dx=touchVector.active?touchVector.x:Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
     let dy=touchVector.active?touchVector.y:Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
     const inputMoving=dx!==0||dy!==0;
@@ -174,10 +168,6 @@
       else {hearts--;stun=.65;immune=1.4;pop(item.x,item.y-22,'−1 ♥','#bd5037');toast('Snack smack! Jelly needs a breather.');}
       if(hearts===0){finish();return;}
       addItem(item.type,item.pair);
-    }
-    if(sofaReady&&!cuddled&&hitsRect(dog.x,dog.y,22,{x:719,y:379,w:185,h:123})) {
-      cuddled=true;score+=100;pop(813,378,'+100 ♥','#355c48');toast('Cuddle secured! There’s still time for socks.');
-      $('sofa-label').textContent='CUDDLE SECURED ♡';$('sofa-status').textContent='Cuddle bonus secured. Keep collecting!';
     }
     effects=effects.filter(effect=>{
       effect.life-=dt;effect.node.setAttribute('y',effect.y-(1-effect.life)*35);effect.node.setAttribute('opacity',Math.max(0,effect.life));
