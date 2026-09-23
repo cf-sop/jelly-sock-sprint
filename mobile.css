@@ -18,9 +18,11 @@
 
   .touch-controls {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 9px 14px 13px;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px 14px;
     background: #fffdf8;
     border-top: 1px solid #edecdf;
   }
@@ -35,6 +37,8 @@
   .mode-note strong { font-size: 8px; }
   .mode-note span { font-size: 8px; }
   .best-stat { display: none; }
-  .joystick { width: 72px; height: 72px; }
-  .joystick-knob { width: 32px; height: 32px; left: 18px; top: 18px; }
+  .game-footer > span:nth-child(2) { display: none; }
+  .touch-hint { font-size: 9px; }
+  .joystick { width: 112px; height: 112px; }
+  .joystick-knob { width: 48px; height: 48px; left: 30px; top: 30px; }
 }
