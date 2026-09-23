@@ -11,19 +11,17 @@ your browser. Keep `index.html`, `style.css`, `game.js`, and the `Jelly` folder
 together.
 
 On an iPhone, open `index.html` in Safari after copying the game folder to the
-device or hosting these same files as a static site. Use the on-screen paw pad;
-keyboard controls remain available on desktop.
+device or hosting these same files as a static site. Use the circular on-screen
+joystick; keyboard controls remain available on desktop.
 
 ## How to play
 
-- Click **Let’s sprint**, then use **Laundry Day** (the default) or choose
-  **Sock Rescue**, then use
-  **WASD**, the **arrow keys**, or the circular on-screen joystick on touch
-  devices to move.
+- Click **Let’s sprint**, then use **WASD**, the **arrow keys**, or the circular
+  on-screen joystick on touch devices to move.
 - Collect coloured socks for **10 points each**.
-- Avoid brown, jagged mystery snacks marked **?**. They drift and bounce through
-  the room. Each costs **one heart** and briefly dazes Jelly; after a hit she has
-  1.4 seconds of protection against further damage.
+- Avoid brown, jagged mystery snacks marked **?**. They stay put, but when Jelly
+  gets close she is gently drawn toward them. Each costs **one heart** and
+  briefly dazes her; after a hit she has 1.4 seconds of protection.
 - You start with **three hearts**. Losing all three ends the round early.
 - At **45 seconds elapsed** (15 seconds remaining), a green sofa appears in the
   bottom-right corner. Touch it for a **one-time 100-point cuddle bonus**.
@@ -32,6 +30,7 @@ keyboard controls remain available on desktop.
   the cuddle if you reached the sofa and shows a score breakdown.
 - Press **Escape** to pause or resume. Switching windows or tabs pauses the game.
 - Click **↻** in the HUD or **One more sprint** at the end to start a fresh round.
+- Your highest score is saved locally in the browser and shown as **BEST**.
 
 ### Laundry Day
 

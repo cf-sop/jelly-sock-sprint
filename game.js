@@ -72,7 +72,8 @@
     const remaining=Math.max(0,Math.ceil(60-elapsed));
     $('timer').textContent=`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
     $('timer').style.color=remaining<=15?'#c36443':'';
-    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':state==='playing'?'Pair-hunting paws':'Ready for mischief';
+    const nearest=nearestSnack();
+    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':nearest&&nearest.distance<155?'Sniffing trouble…':state==='playing'?'Pair-hunting paws':'Ready for mischief';
   }
   function toast(message) {
     $('toast').textContent=message; $('toast').classList.add('show'); toastTime=3;
@@ -122,13 +123,20 @@
     if(state!=='paused') return;
     state='playing';lastTime=performance.now();$('pause-screen').hidden=true;keys.clear();$('resume').blur();
   }
-  function applySnackPull(dx,dy) {
+  function nearestSnack() {
     let nearest=null, distance=Infinity;
     for(const item of items) if(item.type==='snack') { const d=Math.hypot(dog.x-item.x,dog.y-item.y); if(d<distance){nearest=item;distance=d;} }
-    if(!nearest||distance>155) return {dx,dy};
-    const strength=(1-distance/155)*.38;
+    return nearest?{item:nearest,distance}:null;
+  }
+  function applySnackPull(dx,dy) {
+    const found=nearestSnack();
+    if(!found||found.distance>155) return {dx,dy,auto:false};
+    const strength=(1-found.distance/155)*.48;
+    const nearest=found.item, distance=found.distance;
     const towardX=(nearest.x-dog.x)/(distance||1), towardY=(nearest.y-dog.y)/(distance||1);
-    return {dx:dx*(1-strength)+towardX*strength,dy:dy*(1-strength)+towardY*strength};
+    const hasInput=dx!==0||dy!==0;
+    if(!hasInput && distance<135) return {dx:towardX,dy:towardY,auto:true};
+    return {dx:dx*(1-strength)+towardX*strength,dy:dy*(1-strength)+towardY*strength,auto:false};
   }
   function update(dt) {
     elapsed=Math.min(60,elapsed+dt);immune=Math.max(0,immune-dt);stun=Math.max(0,stun-dt);
@@ -138,11 +146,12 @@
     }
     let dx=touchVector.active?touchVector.x:Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
     let dy=touchVector.active?touchVector.y:Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
-    const moving=dx!==0||dy!==0;
+    const inputMoving=dx!==0||dy!==0;
+    const pulled=applySnackPull(dx,dy);({dx,dy}=pulled);
+    const moving=inputMoving||pulled.auto;
     if(moving && stun<=0) {
-      ({dx,dy}=applySnackPull(dx,dy));
       const length=Math.hypot(dx,dy);dx/=length;dy/=length;
-      const step=235*dt;
+      const step=pulled.auto?Math.max(48,125*(1-(nearestSnack()?.distance||135)/135)):235;
       const x=Math.max(32,Math.min(928,dog.x+dx*step));
       const y=Math.max(32,Math.min(528,dog.y+dy*step));
       if(free(x,dog.y,18))dog.x=x;
