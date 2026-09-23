@@ -33,12 +33,11 @@ keyboard controls remain available on desktop.
 - Press **Escape** to pause or resume. Switching windows or tabs pauses the game.
 - Click **↻** in the HUD or **One more sprint** at the end to start a fresh round.
 
-### Modes
+### Laundry Day
 
-- **Sock Rescue:** socks have an escape timer. When one starts running for the
-  laundry basket, catch it before it disappears.
-- **Laundry Day:** socks arrive in matching pairs. Collect both within eight
-  seconds for a **+25 pair bonus**.
+Socks arrive in matching pairs. Collect both within eight seconds for a **+25
+pair bonus**. Matching socks share a colour and pattern family so the pair can
+be recognized at a glance.
 
 The game supports touch devices as well as keyboards. A landscape phone view gives
 the apartment the most room, though portrait view also works. There is no online
@@ -64,6 +63,5 @@ there are no libraries, external assets, APIs, or network requests.
 - `mobile.css`: iPhone layout and touch paw pad
 - `game.js`: movement, collisions, timer, scoring, and game states
 
-To adjust difficulty, the movement speeds, snack movement, rescue timer, and
-collision distances are defined in `game.js` inside `update()` and
-`updateMovingItems()`.
+To adjust difficulty, the movement speed, snack attraction range, pair window,
+and collision distances are defined in `game.js` inside `update()`.

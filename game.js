@@ -8,12 +8,16 @@
     {x:40,y:40,w:105,h:95}, {x:783,y:39,w:132,h:76},
     {x:43,y:437,w:100,h:78}
   ];
+  const SCORE_KEY='jelly-sock-sprint-best';
   let state = 'title', elapsed = 0, score = 0, hearts = 3, collected = 0;
-  let cuddled = false, sofaReady = false, boost = 0, immune = 0, stun = 0;
-  let gameMode = 'laundry', pairStreak = null, pairStreakAt = -99;
+  let cuddled = false, sofaReady = false, immune = 0, stun = 0;
+  let pairStreak = null, pairStreakAt = -99, bestScore = readBestScore();
   const touchVector = {x:0,y:0,active:false};
   let lastTime = 0, toastTime = 0, items = [], effects = [];
   let dog = {x:480,y:285,angle:0};
+
+  function readBestScore() { try { return Number(localStorage.getItem(SCORE_KEY))||0; } catch { return 0; } }
+  function saveBestScore() { try { localStorage.setItem(SCORE_KEY,String(bestScore)); } catch {} }
 
   function svg(tag, attrs, parent) {
     const node = document.createElementNS(NS, tag);
@@ -57,16 +61,18 @@
       node.innerHTML='<path d="M-16-9L-7-12L-3-18L5-13L14-13L13-4L19 3L11 8L8 16L0 12L-10 15L-11 6L-18 1Z" fill="#ae6d3f" stroke="#f7d59d" stroke-width="2"/><circle r="10" fill="#e6ae65"/><text y="5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="16" fill="#67452e">?</text>';
     }
     const angle=Math.random()*Math.PI*2;
-    items.push({type,x,y,node,pair,rotation:Math.random()*70-35,life:type==='sock'&&gameMode==='rescue'?17+Math.random()*7:Infinity,fleeing:false,vx:type==='snack'?Math.cos(angle)*(42+Math.random()*30):0,vy:type==='snack'?Math.sin(angle)*(42+Math.random()*30):0});
+    node.classList.add(type==='snack'?'snack-item':'sock-item');
+    items.push({type,x,y,node,pair,rotation:Math.random()*70-35});
   }
   function hud() {
     $('score').textContent=String(score).padStart(3,'0');
+    $('best-score').textContent=String(bestScore).padStart(3,'0');
     $('hearts').textContent='♥ '.repeat(hearts)+'♡ '.repeat(3-hearts);
     $('hearts').setAttribute('aria-label',`${hearts} hearts`);
     const remaining=Math.max(0,Math.ceil(60-elapsed));
     $('timer').textContent=`${Math.floor(remaining/60)}:${String(remaining%60).padStart(2,'0')}`;
     $('timer').style.color=remaining<=15?'#c36443':'';
-    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':state==='playing'?(gameMode==='laundry'?'Pair-hunting paws':'Sock rescue patrol'):'Ready for mischief';
+    $('mood').textContent=stun>0?'A little snack daze':cuddled?'Cuddles secured':state==='playing'?'Pair-hunting paws':'Ready for mischief';
   }
   function toast(message) {
     $('toast').textContent=message; $('toast').classList.add('show'); toastTime=3;
@@ -79,21 +85,20 @@
     $('dog').setAttribute('transform',`translate(${dog.x} ${dog.y})`);
     $('dog-body').setAttribute('transform',`rotate(${dog.angle})`);
     $('dog').classList.toggle('running',moving && state==='playing');
-    $('dog').classList.toggle('boosted',boost>0);
+    $('dog').classList.remove('boosted');
     $('dog').classList.toggle('invulnerable',immune>0 && Math.floor(immune*9)%2===0);
   }
   function start() {
-    state='playing';elapsed=score=collected=boost=immune=stun=0;hearts=3;cuddled=sofaReady=false;pairStreak=null;pairStreakAt=-99;
+    state='playing';elapsed=score=collected=immune=stun=0;hearts=3;cuddled=sofaReady=false;pairStreak=null;pairStreakAt=-99;
     dog={x:480,y:285,angle:0};keys.clear();touchVector.x=0;touchVector.y=0;touchVector.active=false;if(knob)knob.style.transform='translate(0,0)';items=[];effects=[];
     $('items').replaceChildren();$('effects').replaceChildren();
     ['title-screen','end-screen','pause-screen'].forEach(id=>$(id).hidden=true);
     $('sofa').setAttribute('visibility','hidden');
     $('sofa-label').textContent='CUDDLES THIS WAY ↑';
     $('sofa-status').textContent='Sofa arrives at 0:15 remaining';
-    if(gameMode==='laundry') { for(let pair=0;pair<4;pair++){addItem('sock',pair);addItem('sock',pair);} }
-    else { for(let i=0;i<8;i++) addItem('sock'); }
-    for(let i=0;i<7;i++) addItem('snack');
-    toast(gameMode==='laundry'?'Laundry Day! Match pairs for +25.':'Sock Rescue! Catch them before they run.');hud();renderDog();
+    for(let pair=0;pair<4;pair++){addItem('sock',pair);addItem('sock',pair);}
+    for(let i=0;i<5;i++) addItem('snack');
+    toast('Laundry Day! Match pairs for +25.');hud();renderDog();
     lastTime=performance.now();
     // Keep Space/Enter from accidentally activating a focused restart button.
     if(document.activeElement instanceof HTMLElement) document.activeElement.blur();
@@ -104,8 +109,9 @@
     $('final-score').textContent=score;
     $('result-kicker').textContent=cuddled?'SOCKS. ZOOMIES. SOFA.':'THE ZOOMIES ARE OVER';
     $('result-title').textContent=cuddled?'Cuddle mission complete.':hearts===0?'Too many mystery snacks!':'Still dreaming of socks.';
-    $('result-copy').textContent=cuddled?'A very speedy farmdog. A very well-earned snuggle.':hearts===0?'Time for a little rest. The socks can wait.':'Next time, follow the sofa call for a big cuddle bonus.';
-    $('breakdown').textContent=`${collected} socks × 10 points${gameMode==='laundry'?' · matching pairs add +25':''}${gameMode==='rescue'?' · escaped socks don’t score':''}${cuddled?' + 100 cuddle points':''} · ${hearts} hearts left`;
+    const newBest=score>bestScore;if(newBest){bestScore=score;saveBestScore();}
+    $('result-copy').textContent=newBest?'New best score!':cuddled?'A very speedy farmdog. A very well-earned snuggle.':hearts===0?'Time for a little rest. The socks can wait.':'Next time, follow the sofa call for a big cuddle bonus.';
+    $('breakdown').textContent=`${collected} socks × 10 points · matching pairs add +25${cuddled?' + 100 cuddle points':''} · ${hearts} hearts left · best ${bestScore}`;
     $('again').focus({preventScroll:true});
   }
   function pause() {
@@ -116,31 +122,16 @@
     if(state!=='paused') return;
     state='playing';lastTime=performance.now();$('pause-screen').hidden=true;keys.clear();$('resume').blur();
   }
-  function updateMovingItems(dt) {
-    for (const item of [...items]) {
-      if (item.type==='snack') {
-        const nextX=item.x+item.vx*dt;
-        const nextY=item.y+item.vy*dt;
-        if (free(nextX,item.y,18)) item.x=nextX; else item.vx*=-1;
-        if (free(item.x,nextY,18)) item.y=nextY; else item.vy*=-1;
-        item.rotation += dt*18;
-        item.node.setAttribute('transform',`translate(${item.x} ${item.y}) rotate(${item.rotation})`);
-      } else if (gameMode==='rescue') {
-        item.life-=dt;
-        if (!item.fleeing && item.life<=4) {
-          item.fleeing=true; item.node.setAttribute('opacity','.65'); toast('A sock is making a run for the basket!');
-        }
-        if (item.fleeing) {
-          const tx=199-item.x, ty=498-item.y, distance=Math.hypot(tx,ty)||1;
-          item.x+=tx/distance*108*dt; item.y+=ty/distance*108*dt; item.rotation+=dt*55;
-          item.node.setAttribute('transform',`translate(${item.x} ${item.y}) rotate(${item.rotation})`);
-          if (distance<12) { item.node.remove(); items.splice(items.indexOf(item),1); addItem('sock'); }
-        }
-      }
-    }
+  function applySnackPull(dx,dy) {
+    let nearest=null, distance=Infinity;
+    for(const item of items) if(item.type==='snack') { const d=Math.hypot(dog.x-item.x,dog.y-item.y); if(d<distance){nearest=item;distance=d;} }
+    if(!nearest||distance>155) return {dx,dy};
+    const strength=(1-distance/155)*.38;
+    const towardX=(nearest.x-dog.x)/(distance||1), towardY=(nearest.y-dog.y)/(distance||1);
+    return {dx:dx*(1-strength)+towardX*strength,dy:dy*(1-strength)+towardY*strength};
   }
   function update(dt) {
-    elapsed=Math.min(60,elapsed+dt);boost=Math.max(0,boost-dt);immune=Math.max(0,immune-dt);stun=Math.max(0,stun-dt);
+    elapsed=Math.min(60,elapsed+dt);immune=Math.max(0,immune-dt);stun=Math.max(0,stun-dt);
     if(elapsed>=45 && !sofaReady) {
       sofaReady=true;$('sofa').setAttribute('visibility','visible');
       $('sofa-status').textContent='Sofa time! Head to the bottom-right corner.';toast('Sofa time! Find your +100 cuddle.');
@@ -149,23 +140,23 @@
     let dy=touchVector.active?touchVector.y:Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
     const moving=dx!==0||dy!==0;
     if(moving && stun<=0) {
+      ({dx,dy}=applySnackPull(dx,dy));
       const length=Math.hypot(dx,dy);dx/=length;dy/=length;
-      const step=(boost>0?355:235)*dt;
+      const step=235*dt;
       const x=Math.max(32,Math.min(928,dog.x+dx*step));
       const y=Math.max(32,Math.min(528,dog.y+dy*step));
       if(free(x,dog.y,18))dog.x=x;
       if(free(dog.x,y,18))dog.y=y;
       dog.angle=Math.atan2(dy,dx)*180/Math.PI;
     }
-    updateMovingItems(dt);
     for(const item of [...items]) {
       if(Math.hypot(dog.x-item.x,dog.y-item.y)>31)continue;
       if(item.type==='snack' && immune>0)continue;
       items.splice(items.indexOf(item),1);item.node.remove();
       if(item.type==='sock') {
         score+=10;collected++;pop(item.x,item.y-22,'+10','#355c48');
-        if(gameMode==='laundry' && pairStreak===item.pair && elapsed-pairStreakAt<=8){score+=25;pop(item.x,item.y-45,'PAIR +25','#d26b43');toast('A perfect pair! +25 laundry bonus.');pairStreak=null;}
-        else if(gameMode==='laundry'){pairStreak=item.pair;pairStreakAt=elapsed;toast('Pair started! Find its match.');}
+        if(pairStreak===item.pair && elapsed-pairStreakAt<=8){score+=25;pop(item.x,item.y-45,'PAIR +25','#d26b43');toast('A perfect pair! +25 laundry bonus.');pairStreak=null;}
+        else {pairStreak=item.pair;pairStreakAt=elapsed;toast('Pair started! Find its match.');}
       }
       else {hearts--;stun=.65;immune=1.4;pop(item.x,item.y-22,'−1 ♥','#bd5037');toast('Snack smack! Jelly needs a breather.');}
       if(hearts===0){finish();return;}
@@ -210,9 +201,6 @@
   joystick.addEventListener('pointerdown',event=>{if(state!=='playing')return;event.preventDefault();joystick.setPointerCapture?.(event.pointerId);updateJoystick(event);});
   joystick.addEventListener('pointermove',event=>{if(touchVector.active) {event.preventDefault();updateJoystick(event);}});
   joystick.addEventListener('pointerup',releaseJoystick);joystick.addEventListener('pointercancel',releaseJoystick);joystick.addEventListener('lostpointercapture',releaseJoystick);
-  document.querySelectorAll('.mode-option').forEach(option=>option.addEventListener('click',()=>{
-    gameMode=option.dataset.mode;document.querySelectorAll('.mode-option').forEach(button=>button.classList.toggle('selected',button===option));
-  }));
   window.addEventListener('blur',pause);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   $('start').addEventListener('click',start);$('restart').addEventListener('click',start);$('again').addEventListener('click',start);$('resume').addEventListener('click',resume);
